@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAX_RULE=1
+MAX_RULE=15
 
 APP_TYPES=`aws ec2 describe-security-groups --group-name default | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"]' | jq length`
 MAX_APP=0
