@@ -1,85 +1,159 @@
 #!/bin/bash
 
-MAX_RULE=15
+usage="$(basename "$0") [-h --help] [-p --port -g --group] [-m --max -n --number -a --asc -d --desc] -- program to manage EC2 security groups 
 
-APP_TYPES=`aws ec2 describe-security-groups --group-name default | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"]' | jq length`
-MAX_APP=0
-SAVE_APP=0
-for (( i=0; i<$APP_TYPES; i++ ))
+where:
+    -h --help    show this help text
+    -p --port    set the port value (example: 22 - ssh) *required
+    -g --group   set the group name (example: default) *required
+    -m --max     set the number of rules allowed (default: 0)
+    -n --number  set the number of rules to be deleted (default: delete until down to supplied max value)
+    -a --asc     delete the oldest rules first (default)
+    -d --desc    delete the newest rules first"
+
+desc=0
+asc=0
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
 do
-FIND=`aws ec2 describe-security-groups --group-name default | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"]' | jq length`
-if [ $FIND -gt $MAX_APP ]
-then
-        MAX_APP=$FIND
-        SAVE_APP=$i
-fi
+key="$1"
+
+#asc and desc are no values
+
+case $key in
+    -h|--help)
+    echo "$usage"
+    exit
+    ;;
+    -p|--port)
+    port="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -g|--group)
+    groupName="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -m|--max)
+    maxRules="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -n|--number)
+    numDelete="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -d|--desc)
+    desc=1
+    shift # past argument
+    ;;
+    -a|--asc)
+    asc=1 
+    shift # past argument
+    ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+    echo "$usage" >&2
+    exit
+    ;;
+    \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+    echo "$usage" >&2
+    exit
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    echo "$(basename "$0") illegal option"
+    exit
+    shift # past argument
+    ;;
+esac
 done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [ $MAX_APP -gt $MAX_RULE ]
+if [ -z $port ]
 then
-for (( i=0; i<$APP_TYPES; i++ ))
+  echo "Port parameter needed!" && exit 1;
+fi
+
+if [ -z $groupName ]
+then
+  echo "Group name parameter needed!" && exit 1;
+fi
+
+if [ -z $maxRules ]
+then
+  maxRules=0;
+fi
+
+if [ $desc -eq $asc ]
+then
+  if [ $desc -eq 1 ] 
+  then
+    echo "--desc and --asc flags cannot both be set"
+    exit
+  fi
+  asc=1 
+fi
+
+
+#get the number of protocols in the security group
+numProtocols=$(aws ec2 describe-security-groups --group-name $groupName | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"]' | jq length)
+
+for (( i=0; i<$numProtocols; i++ ))
 do
-        PORT=`aws ec2 describe-security-groups --group-name default | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["FromPort"]'`
-        if [ $PORT -eq 22 ]
+        thisPort=$(aws ec2 describe-security-groups --group-name $groupName | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["FromPort"]');
+        if [ $thisPort -eq $port ]
         then
-        for (( j=0; j<$MAX_APP; j++ ))
-        do
-                CIDR=`aws ec2 describe-security-groups --group-name default | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"] | .[0] | .["CidrIp"]'`
-                #echo $CIDR
-		aws ec2 revoke-security-group-ingress --group-name default --protocol tcp --port 22 --cidr $CIDR
-        done
-	i=$((i-1))
-	APP_TYPES=$((APP_TYPES-1))
-        fi
-done
-fi
-
-
-DB_TYPES=`aws ec2 describe-security-groups --group-name launch-wizard-1 | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"]' | jq length`
-
-MAX_DB=0
-SAVE_DB=0
-for (( i=0; i<$DB_TYPES; i++ ))
-do
-FIND=`aws ec2 describe-security-groups --group-name launch-wizard-1 | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"]' | jq length`
-if [ $FIND -gt $MAX_DB ]
-then 
-	MAX_DB=$FIND
-	SAVE_DB=$i
-fi
-done
-
-if [ $MAX_DB -gt $MAX_RULE ]
-then
-for (( i=0; i<$DB_TYPES; i++ ))
-do
-	PORT=`aws ec2 describe-security-groups --group-name launch-wizard-1 | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["FromPort"]'`
-	if [ $PORT -eq 80 ]
+	numRules=$(aws ec2 describe-security-groups --group-name $groupName | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"]' | jq length)	
+	if [ $numRules -gt $maxRules ]
 	then
-	for (( j=0; j<$MAX_DB; j++ ))
-	do
-		CIDR=`aws ec2 describe-security-groups --group-name launch-wizard-1 | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"] | .[0] | .["CidrIp"]'`
-		#echo $CIDR
-		aws ec2 revoke-security-group-ingress --group-name launch-wizard-1 --protocol tcp --port 80 --cidr $CIDR
-	done
-	i=$((i-1))
-        DB_TYPES=$((DB_TYPES-1))
-	fi
+
+	#desc is most recent first	
+	#if desc, always delete the highest # row, so x=(numRules-1) and x-- after each iteration
+	if [ $desc -eq 1 ]
+	then
+	  delNumber=$((numRules-1))
+ 	fi
 	
-	if [ $PORT -eq 22 ]
+	#asc is oldest first
+	#if asc, always delete the 0 row
+	if [ $asc -eq 1 ]
         then
-        for (( j=0; j<$MAX_DB; j++ ))
+          delNumber=0
+        fi
+
+	#if numDelete is not supplied by user, delete all in group. If maxRules specified and numDelete is not, then delete until at maxRules
+	if [ -z $numDelete ]
+	then
+	  if [ -z $maxRules ]
+	  then
+	    numDelete=$numRules;
+	  else
+	    numDelete=$((numRules-maxRules))
+	  fi
+	fi
+
+	#use user supplied number to delete
+	if [ $numDelete -le $numRules ]
+	then
+	  iterate=$numDelete
+	else  
+	  iterate=$numRules
+	fi
+
+	for (( j=0; j<$iterate; j++ ))
         do
-                CIDR=`aws ec2 describe-security-groups --group-name launch-wizard-1 | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"] | .[0] | .["CidrIp"]'`
-                #echo $CIDR
-                aws ec2 revoke-security-group-ingress --group-name launch-wizard-1 --protocol tcp --port 22 --cidr $CIDR
+                CIDR=`aws ec2 describe-security-groups --group-name $groupName | jq -r \ '.["SecurityGroups"] | .[0] | .["IpPermissions"] | .['"$i"'] | .["IpRanges"] | .['"$delNumber"'] | .["CidrIp"]'`
+                echo "removed: "$CIDR
+		aws ec2 revoke-security-group-ingress --group-name $groupName --protocol tcp --port $port --cidr $CIDR
+		if [ $desc -eq 1 ]
+        	then
+          	  delNumber=$((delNumber-1))
+        	fi
         done
-        i=$((i-1))
-        DB_TYPES=$((DB_TYPES-1))
+	break
+	fi
         fi
 done
-fi
-
-aws ec2 authorize-security-group-ingress --group-name default --protocol tcp --port 22 --cidr $1
-aws ec2 authorize-security-group-ingress --group-name launch-wizard-1 --protocol tcp --port 22 --cidr $1
-aws ec2 authorize-security-group-ingress --group-name launch-wizard-1 --protocol tcp --port 80 --cidr $1
