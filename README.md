@@ -9,9 +9,10 @@ A package for managing ec2 security groups
 ### AWS CLI Setup
 You must follow the AWS CLI setup instructions to configure your environment with your aws account.
 
-2. Clone the repository <br>
-```git clone https://github.com/themsabs/AWS-EC2-Security-Groups.git
-cd AWS-EC2-Security-Groups```
+2. Clone the repository 
+
+`git clone https://github.com/themsabs/AWS-EC2-Security-Groups.git`<br>
+`cd AWS-EC2-Security-Groups`
 
 3. Install with your package manager
 
