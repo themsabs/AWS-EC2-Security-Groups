@@ -1,0 +1,5 @@
+aws-sg (0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Matthew Sabatini <msabatini@isport360.com>  Fri, 06 Oct 2017 00:37:23 -0400

@@ -1,0 +1,11 @@
+Package: aws-sg
+Version: 0.1-1
+Architecture: all
+Maintainer: Matthew Sabatini <msabatini@isport360.com>
+Installed-Size: 34
+Depends: jq, awscli
+Section: unknown
+Priority: optional
+Homepage: <insert the upstream URL, if relevant>
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Fri, 06 Oct 2017 00:37:23 -0400
+Source: aws-sg
+Binary: aws-sg
+Architecture: source all
+Version: 0.1-1
+Distribution: unstable
+Urgency: low
+Maintainer: Matthew Sabatini <msabatini@isport360.com>
+Changed-By: Matthew Sabatini <msabatini@isport360.com>
+Description: 
+ aws-sg     - <insert up to 60 chars description>
+Changes: 
+ aws-sg (0.1-1) unstable; urgency=low
+ .
+   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+Checksums-Sha1: 
+ 0c39f9dca32b3e3bfb9d30a37b69eb5afccbdd29 545 aws-sg_0.1-1.dsc
+ dfdee2c92d5fa753f7f1821c15e89d22fd267cfb 3444 aws-sg_0.1-1.tar.gz
+ bd329607dca56b9368163c898e7ff8465c209ab3 3572 aws-sg_0.1-1_all.deb
+Checksums-Sha256: 
+ 4a275315bcdddca5b7d86a4f95ec72ae3d59e30c19a274372deaa540b60e10b4 545 aws-sg_0.1-1.dsc
+ 8052be0e6962a21ce05dcf104e85803c06c06e2d30c4c400551b4288cd4c20d1 3444 aws-sg_0.1-1.tar.gz
+ 9d1c407e0673c959b18ad3c65624b8402d8e01ce8ed9d3bac1000fab97a6b066 3572 aws-sg_0.1-1_all.deb
+Files: 
+ a112bd56a6b4e345d9bbc183f0e3411c 545 unknown optional aws-sg_0.1-1.dsc
+ db5e5125b0c2922acd8a66f0676fabdd 3444 unknown optional aws-sg_0.1-1.tar.gz
+ abf3b768a02c990d91c1aaa4b36be6eb 3572 unknown optional aws-sg_0.1-1_all.deb

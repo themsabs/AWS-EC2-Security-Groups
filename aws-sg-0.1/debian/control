@@ -1,0 +1,15 @@
+Source: aws-sg
+Section: unknown
+Priority: optional
+Maintainer: Matthew Sabatini <msabatini@isport360.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/aws-sg.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/aws-sg.git;a=summary
+
+Package: aws-sg
+Architecture: all
+Depends: ${misc:Depends}, jq, awscli
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
