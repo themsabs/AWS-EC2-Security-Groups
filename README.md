@@ -11,7 +11,8 @@ You must follow the [AWS CLI setup instructions](http://docs.aws.amazon.com/lamb
 
 ## Usage
 
-```aws-sg [-h --help] [-p --port -g --group] [-m --max -n --number -a --asc -d --desc] 
+```
+aws-sg [-h --help] [-p --port -g --group] [-m --max -n --number -a --asc -d --desc] 
 
 -- program to manage EC2 security groups
 
