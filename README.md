@@ -11,7 +11,7 @@ You must follow the [AWS CLI setup instructions](http://docs.aws.amazon.com/lamb
 
 ## Usage
 
-aws-sg [-h --help] [-p --port -g --group] [-m --max -n --number -a --asc -d --desc] 
+```aws-sg [-h --help] [-p --port -g --group] [-m --max -n --number -a --asc -d --desc] 
 
 -- program to manage EC2 security groups
 
@@ -22,7 +22,7 @@ where:
     -m --max     set the number of rules allowed (default: 0)
     -n --number  set the number of rules to be deleted (default: delete until down to supplied max value)
     -a --asc     delete the oldest rules first (default)
-    -d --desc    delete the newest rules first
+    -d --desc    delete the newest rules first```
 
 ## Installing Options
 
