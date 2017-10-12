@@ -22,7 +22,8 @@ where:
     -m --max     set the number of rules allowed (default: 0)
     -n --number  set the number of rules to be deleted (default: delete until down to supplied max value)
     -a --asc     delete the oldest rules first (default)
-    -d --desc    delete the newest rules first```
+    -d --desc    delete the newest rules first
+```
 
 ## Installing Options
 
