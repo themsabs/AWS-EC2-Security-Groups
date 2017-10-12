@@ -1,7 +1,7 @@
 # AWS-EC2-Security-Groups
 A package for managing ec2 security groups
 
-## Installing
+## Pre-Requisites
 1. You’ll need to install a few packages first:
 * [jq](https://stedolan.github.io/jq/)
 * [awscli](https://aws.amazon.com/cli/)
@@ -9,17 +9,22 @@ A package for managing ec2 security groups
 ### AWS CLI Setup
 You must follow the AWS CLI setup instructions to configure your environment with your aws account.
 
-2. Clone the repository 
+## Installing Options
+
+### Clone the repository 
 
 `git clone https://github.com/themsabs/AWS-EC2-Security-Groups.git`<br>
 `cd AWS-EC2-Security-Groups`
 
-3. Install with your package manager
-
 ### dpkg
+```wget https://s3.amazonaws.com/ec2-sg/releases/0.1/aws-sg_0.1-1_all.deb```
 ```sudo dpkg -i aws-sg_0.1-1_all.deb```
 
 ### yum
+```sudo yum install https://s3.amazonaws.com/ec2-sg/releases/0.1/aws-sg-0.1-2.noarch.rpm```
+
+### rpm
+```wget https://s3.amazonaws.com/ec2-sg/releases/0.1/aws-sg-0.1-2.noarch.rpm```
 ```sudo rpm -Uvh aws-sg-0.1-2.noarch.rpm```
 
 If you encounter the error(s):
