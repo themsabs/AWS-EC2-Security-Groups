@@ -7,7 +7,7 @@ A package for managing ec2 security groups
 * [awscli](https://aws.amazon.com/cli/)
 
 ### AWS CLI Setup
-You must follow the AWS CLI setup instructions to configure your environment with your aws account.
+You must follow the [AWS CLI setup instructions](http://docs.aws.amazon.com/lambda/latest/dg/setup-awscli.html) to configure your environment with your aws account.
 
 ## Installing Options
 
